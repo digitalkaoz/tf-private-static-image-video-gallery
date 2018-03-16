@@ -34,7 +34,7 @@ resource "aws_s3_bucket_object" "encode_code" {
   bucket     = "${var.build_bucket_id}"
   key        = "lambda-encode.zip"
   source     = "${path.module}/lambda-encode.zip"
-  etag       = "${md5(file("${path.module}/lambda-encode.zip"))}"
+  etag       = "${data.archive_file.encode_code.output_md5}"
 }
 
 resource "aws_lambda_function" "encode" {

@@ -17,8 +17,8 @@ resource "null_resource" "build_build" {
           lambci/lambda:build-nodejs6.10 \
           -c "\
             npm install --production \
-            && rm src/pages/elements.js \
-            && rm -rf static/images/pic*.jpg \
+            && rm src/pages/elements.js || true \
+            && rm -rf static/images/pic*.jpg || true \
             && cp patch/pages-writer.js node_modules/gatsby/dist/internal-plugins/query-runner/pages-writer.js
           "
         EOF
