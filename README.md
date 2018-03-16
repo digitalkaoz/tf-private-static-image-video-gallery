@@ -108,6 +108,8 @@ module "ssl_private_image_gallery" {
 }
 ```
 
+you have to wait until your Cloudfront Distribution is done deploying, so grab a coffee (~20min) before going on
+
 ### uploading images and videos
 
 simply drop your files (categorized by folders) inside the `source` bucket into the folder `original`
