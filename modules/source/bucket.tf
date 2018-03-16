@@ -42,6 +42,12 @@ resource "aws_s3_bucket" "source" {
   }
 }
 
+resource "aws_s3_bucket_object" "original" {
+  bucket = "${aws_s3_bucket.source.id}"
+  key = "original/"
+
+}
+
 resource "aws_s3_bucket_notification" "source_media_modified" {
   bucket = "${aws_s3_bucket.source.id}"
 

@@ -102,6 +102,8 @@ module "ssl_private_image_gallery" {
 }
 ```
 
+the simply drop your files (categorized by folders) inside the `source` bucket into the folder `original`
+
 ## TODO
 
 * encrypt more stuff
@@ -110,4 +112,3 @@ module "ssl_private_image_gallery" {
 * certificate generation with DNS validation
 * cloudfront key_pair handling complete inside terraform
 * remove/publish gatsby lambda patches/hacks
-* fix gatsby css generation in lambda (to get rid of custom html.js + proper styles toolchain)
