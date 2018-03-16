@@ -1,6 +1,6 @@
-# Serverless Image/Video Gallery Website
+# Serverless Secured Image/Video Gallery Website
 
-Image/Video Gallery built ontop of AWS Services
+password protected Image/Video Gallery built ontop of AWS Services
 
 > this Project started as a simple Terraform Port of [AWSPics](https://github.com/jpsim/AWSPics), so most ideas comes from there.
 
