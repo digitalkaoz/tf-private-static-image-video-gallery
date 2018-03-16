@@ -102,7 +102,17 @@ module "ssl_private_image_gallery" {
 }
 ```
 
-the simply drop your files (categorized by folders) inside the `source` bucket into the folder `original`
+### uploading images and videos
+
+simply drop your files (categorized by folders) inside the `source` bucket into the folder `original`
+
+### providing folder metadata
+
+simply create a markdown file inside the folder named `post.md`
+
+### creating users
+
+simply create them inside `AWS Cognito`
 
 ## TODO
 
