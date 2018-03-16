@@ -4,6 +4,12 @@ password protected Image/Video Gallery built ontop of AWS Services
 
 > this Project started as a simple Terraform Port of [AWSPics](https://github.com/jpsim/AWSPics), so most ideas comes from there.
 
+## Demo
+
+[Demo Deployment](https://gallery-demo.digitalkaoz.net/)
+
+use these credentials: `demouser` : `demouser`
+
 ## Whats inside
 
 * AWS Cloudfront (delivers the website)
@@ -61,7 +67,7 @@ a user in your [AWS Cognito User Pool](https://eu-central-1.console.aws.amazon.c
 ```tf
 //terraform.tfvars
 
-domain = "testing.digitalkaoz.net"
+domain = "gallery-demo.digitalkaoz.net"
 region = "eu-central-1"
 certdomain = "digitalkaoz.net" #only if your domain is a subdomain
 cloudfront_key_pair = "XYZ"
