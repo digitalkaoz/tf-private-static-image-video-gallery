@@ -61,7 +61,7 @@ a user in your [AWS Cognito User Pool](https://eu-central-1.console.aws.amazon.c
 ```tf
 //terraform.tfvars
 
-domain = "cunde.digitalkaoz.net"
+domain = "testing.digitalkaoz.net"
 region = "eu-central-1"
 certdomain = "digitalkaoz.net" #only if your domain is a subdomain
 cloudfront_key_pair = "XYZ"
@@ -91,7 +91,7 @@ provider "aws" {
 }
 
 module "ssl_private_image_gallery" {
-  source = "github.com/digitalkaoz/tf-serverless-private-gallery"
+  source = "github.com/digitalkaoz/tf-private-static-image-video-gallery"
 
   region                           = "${var.region}"
   domain                           = "${var.domain}"
