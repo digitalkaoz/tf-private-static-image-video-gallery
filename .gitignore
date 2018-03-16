@@ -4,3 +4,8 @@
 
 # Module directory
 .terraform/
+
+node_modules
+modules/*/*.zip
+modules/*/*/local.sh
+
