@@ -7,12 +7,6 @@ variable "certdomain" {
   default     = ""
 }
 
-variable "mx_hosts" {
-  type        = "list"
-  description = "the mx hosts for this domain"
-  default     = []
-}
-
 variable "region" {
   description = "the aws region to deploy to"
   default     = "eu-central-1"

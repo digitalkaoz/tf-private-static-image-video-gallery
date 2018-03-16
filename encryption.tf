@@ -51,8 +51,6 @@ data "aws_iam_policy_document" "kms_key" {
         "${module.build.role_arn}",
       ]
 
-      //        "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity E22VI7C8GL7KVD"
-
       type = "AWS"
     }
   }
