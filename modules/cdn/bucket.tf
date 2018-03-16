@@ -5,4 +5,11 @@ resource "aws_s3_bucket" "log" {
   tags {
     Site = "${var.domain}"
   }
+
+  lifecycle_rule {
+    enabled = true
+    expiration {
+      days = 7
+    }
+  }
 }
