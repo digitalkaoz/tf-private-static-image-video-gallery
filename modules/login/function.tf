@@ -29,6 +29,7 @@ data "archive_file" "login_code" {
 }
 
 resource "aws_s3_bucket_object" "login_code" {
+  depends_on  = ["null_resource.login_build"]
   bucket = "${var.build_bucket_id}"
   key    = "lambda-login.zip"
   source = "${data.archive_file.login_code.output_path}"

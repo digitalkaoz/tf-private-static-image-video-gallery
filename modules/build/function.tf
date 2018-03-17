@@ -1,9 +1,9 @@
 resource "null_resource" "build_build" {
   triggers {
-    main    = "${base64sha256(file("${path.module}/function/index.js"))}"
-    package = "${base64sha256(file("${path.module}/function/package.json"))}"
-    config  = "${base64sha256(file("${path.module}/function/gatsby-config.js"))}"
-    layout  = "${base64sha256(file("${path.module}/function/src/layouts/index.js"))}"
+    main    = "${sha256(file("${path.module}/function/index.js"))}"
+    package = "${sha256(file("${path.module}/function/package.json"))}"
+    config  = "${sha256(file("${path.module}/function/gatsby-config.js"))}"
+    layout  = "${sha256(file("${path.module}/function/src/layouts/index.js"))}"
   }
 
   provisioner "local-exec" {
@@ -33,6 +33,7 @@ data "archive_file" "build_code" {
 }
 
 resource "aws_s3_bucket_object" "build_code" {
+  depends_on  = ["null_resource.build_build"]
   bucket = "${var.build_bucket_id}"
   key    = "lambda-build.zip"
   source = "${data.archive_file.build_code.output_path}"

@@ -30,6 +30,7 @@ data "archive_file" "resize_code" {
 }
 
 resource "aws_s3_bucket_object" "resize_code" {
+  depends_on  = ["null_resource.resize_build"]
   bucket = "${var.build_bucket_id}"
   key    = "lambda-resize.zip"
   source = "${data.archive_file.resize_code.output_path}"
