@@ -125,7 +125,7 @@ const writePost = (config) => {
     const publicImages = config.images
         .filter((image) => image.Key.indexOf('.png') === -1)
         .map((image) => {
-            const key = image.Key.replace('original/', '');
+            const key = encodeURI(image.Key.replace('original/', ''));
 
             if ([".mov", ".mp4"].includes(path.extname(key).toLowerCase())) {
                 return {src: `/original/${key.replace(path.extname(key), ".mp4")}`}

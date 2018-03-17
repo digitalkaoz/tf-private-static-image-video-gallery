@@ -91,27 +91,6 @@ resource "aws_cloudfront_distribution" "web" {
   }
 
   cache_behavior {
-    target_origin_id       = "source.${var.domain}"
-    path_pattern           = "original/*"
-    allowed_methods        = ["HEAD", "GET", "OPTIONS"]
-    cached_methods         = ["HEAD", "GET", "OPTIONS"]
-    default_ttl            = 86400
-    max_ttl                = 86400
-    min_ttl                = 86400
-    compress               = true
-    viewer_protocol_policy = "redirect-to-https"
-    trusted_signers        = ["self"]
-
-    "forwarded_values" {
-      cookies {
-        forward = "all"
-      }
-
-      query_string = false
-    }
-  }
-
-  cache_behavior {
     target_origin_id       = "processed.${var.domain}"
     path_pattern           = "pics/resized/*"
     allowed_methods        = ["HEAD", "GET", "OPTIONS"]
