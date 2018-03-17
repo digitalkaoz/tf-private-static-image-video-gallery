@@ -4,6 +4,7 @@ resource "null_resource" "build_build" {
     package = "${sha256(file("${path.module}/function/package.json"))}"
     config  = "${sha256(file("${path.module}/function/gatsby-config.js"))}"
     layout  = "${sha256(file("${path.module}/function/src/layouts/index.js"))}"
+    path    = "${path.module}/function"
   }
 
   provisioner "local-exec" {
@@ -27,7 +28,7 @@ resource "null_resource" "build_build" {
 
 data "archive_file" "build_code" {
   depends_on  = ["null_resource.build_build"]
-  source_dir  = "${path.module}/function"
+  source_dir  = "${null_resource.build_build.triggers.path}"
   output_path = "${path.module}/lambda-build.zip"
   type        = "zip"
 }

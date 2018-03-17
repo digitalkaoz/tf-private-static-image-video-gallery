@@ -2,6 +2,7 @@ resource "null_resource" "login_build" {
   triggers {
     main    = "${sha256(file("${path.module}/function/index.js"))}"
     package = "${sha256(file("${path.module}/function/package.json"))}"
+    path    = "${path.module}/function"
   }
 
   provisioner "local-exec" {
@@ -22,14 +23,12 @@ resource "null_resource" "login_build" {
 }
 
 data "archive_file" "login_code" {
-  depends_on  = ["null_resource.login_build"]
-  source_dir  = "${path.module}/function"
+  source_dir  = "${null_resource.login_build.triggers.path}"
   output_path = "${path.module}/lambda-login.zip"
   type        = "zip"
 }
 
 resource "aws_s3_bucket_object" "login_code" {
-  depends_on  = ["null_resource.login_build"]
   bucket = "${var.build_bucket_id}"
   key    = "lambda-login.zip"
   source = "${data.archive_file.login_code.output_path}"

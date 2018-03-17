@@ -2,6 +2,7 @@ resource "null_resource" "resize_build" {
   triggers {
     main    = "${sha256(file("${path.module}/resize/index.js"))}"
     package = "${sha256(file("${path.module}/resize/package.json"))}"
+    path    = "${path.module}/resize"
   }
 
   provisioner "local-exec" {
@@ -23,14 +24,12 @@ resource "null_resource" "resize_build" {
 }
 
 data "archive_file" "resize_code" {
-  depends_on  = ["null_resource.resize_build"]
-  source_dir  = "${path.module}/resize"
+  source_dir  = "${null_resource.resize_build.triggers.path}"
   output_path = "${path.module}/lambda-resize.zip"
   type        = "zip"
 }
 
 resource "aws_s3_bucket_object" "resize_code" {
-  depends_on  = ["null_resource.resize_build"]
   bucket = "${var.build_bucket_id}"
   key    = "lambda-resize.zip"
   source = "${data.archive_file.resize_code.output_path}"

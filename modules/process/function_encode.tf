@@ -2,6 +2,7 @@ resource "null_resource" "encode_build" {
   triggers {
     main    = "${sha256(file("${path.module}/encode/index.js"))}"
     package = "${sha256(file("${path.module}/encode/package.json"))}"
+    path    = "${path.module}/encode"
   }
 
   provisioner "local-exec" {
@@ -23,14 +24,12 @@ resource "null_resource" "encode_build" {
 }
 
 data "archive_file" "encode_code" {
-  depends_on  = ["null_resource.encode_build"]
-  source_dir  = "${path.module}/encode"
+  source_dir  = "${null_resource.encode_build.triggers.path}"
   output_path = "${path.module}/lambda-encode.zip"
   type        = "zip"
 }
 
 resource "aws_s3_bucket_object" "encode_code" {
-  depends_on  = ["null_resource.encode_build"]
   bucket     = "${var.build_bucket_id}"
   key        = "lambda-encode.zip"
   source     = "${path.module}/lambda-encode.zip"
