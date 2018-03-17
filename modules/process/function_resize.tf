@@ -43,7 +43,7 @@ resource "aws_lambda_function" "resize" {
   runtime          = "nodejs6.10"
   s3_bucket        = "${var.build_bucket_id}"
   s3_key           = "${aws_s3_bucket_object.resize_code.key}"
-  source_code_hash = "${aws_s3_bucket_object.resize_code.etag}"
+  source_code_hash = "${data.archive_file.resize_code.output_base64sha256}"
   timeout          = 20
   memory_size      = 1024
 

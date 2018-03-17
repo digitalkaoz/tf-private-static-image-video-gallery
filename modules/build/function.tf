@@ -48,7 +48,7 @@ resource "aws_lambda_function" "build" {
   runtime          = "nodejs6.10"
   s3_bucket        = "${var.build_bucket_id}"
   s3_key           = "${aws_s3_bucket_object.build_code.key}"
-  source_code_hash = "${aws_s3_bucket_object.build_code.etag}"
+  source_code_hash = "${data.archive_file.build_code.output_base64sha256}"
   timeout          = 120
   memory_size      = 2048
 
