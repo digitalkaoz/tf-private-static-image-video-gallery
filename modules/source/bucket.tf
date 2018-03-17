@@ -46,6 +46,7 @@ resource "aws_s3_bucket_object" "original" {
   bucket = "${aws_s3_bucket.source.id}"
   key = "original/"
   content = ""
+  etag = "${md5("")}"
 }
 
 resource "aws_s3_bucket_notification" "source_media_modified" {

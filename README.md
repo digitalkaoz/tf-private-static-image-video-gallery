@@ -130,3 +130,5 @@ simply create them inside `AWS Cognito`
 * certificate generation with DNS validation
 * cloudfront key_pair handling complete inside terraform
 * remove/publish gatsby lambda patches/hacks
+* Fix Terraform Building of function code ordering = build -> package -> upload -> create_function (sometimes its wrong)
+* sometimes the build lambda ist uploaded somehow strange and errors in gatsby site config validation "path should not be null"

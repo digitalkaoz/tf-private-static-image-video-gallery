@@ -68,14 +68,14 @@ module.exports = {
                 // Do cache bust JS URLs until can figure out how to make Webpack's
                 // URLs truely content-addressed.
                 dontCacheBustUrlsMatching: /(.\w{8}.woff2)/, //|-\w{20}.js)/,
-                runtimeCaching: [
-                    {
-                        // Add runtime caching of images.
-                        urlPattern: /\.(?:png|jpg|jpeg|webp|svg|gif|tiff)$/,
-                        handler: 'fastest',
-                    },
-                ],
-                skipWaiting: false,
+                // runtimeCaching: [
+                //     {
+                //         // Add runtime caching of images.
+                //         urlPattern: /\.(?:png|jpg|jpeg|webp|svg|gif|tiff)$/,
+                //         handler: 'fastest',
+                //     },
+                // ],
+                skipWaiting: true,
             }
         }
     ],
