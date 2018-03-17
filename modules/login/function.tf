@@ -1,7 +1,7 @@
 resource "null_resource" "login_build" {
   triggers {
-    main    = "${base64sha256(file("${path.module}/function/index.js"))}"
-    package = "${base64sha256(file("${path.module}/function/package.json"))}"
+    main    = "${sha256(file("${path.module}/function/index.js"))}"
+    package = "${sha256(file("${path.module}/function/package.json"))}"
   }
 
   provisioner "local-exec" {

@@ -1,7 +1,7 @@
 resource "null_resource" "resize_build" {
   triggers {
-    main    = "${base64sha256(file("${path.module}/resize/index.js"))}"
-    package = "${base64sha256(file("${path.module}/resize/package.json"))}"
+    main    = "${sha256(file("${path.module}/resize/index.js"))}"
+    package = "${sha256(file("${path.module}/resize/package.json"))}"
   }
 
   provisioner "local-exec" {
