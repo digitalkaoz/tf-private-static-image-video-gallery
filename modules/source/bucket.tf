@@ -45,7 +45,7 @@ resource "aws_s3_bucket" "source" {
 resource "aws_s3_bucket_object" "original" {
   bucket = "${aws_s3_bucket.source.id}"
   key = "original/"
-  content = ""
+  source = "/dev/null"
   etag = "${md5("")}"
 }
 
