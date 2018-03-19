@@ -130,7 +130,14 @@ class Gallery extends Component {
                     <div className="gallery--thumbnail" key={image.src}>
                         { image.src.endsWith('.mp4') ?
                             <Player poster={image.src.replace('.mp4', '_00001.png')}><source src={image.src} /></Player> :
-                            <a href={image.src} onClick={(e) => this.openLightbox(i, e)} className="image"><img className="gallery--source" src={image.src} alt=""/></a>
+                            <a href={image.src} onClick={(e) => this.openLightbox(i, e)} className="image">
+                                <img className="gallery--source"
+                                     sizes="100vw"
+                                     src={image.src}
+                                     srcSet={image.srcSet}
+                                     alt=""
+                                 />
+                            </a>
                         }
                     </div>
                 )}

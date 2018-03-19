@@ -132,3 +132,4 @@ simply create them inside `AWS Cognito`
 * remove/publish gatsby lambda patches/hacks
 * Fix Terraform Building of function code ordering = build -> package -> upload -> create_function (sometimes its wrong)
 * sometimes the build lambda ist uploaded somehow strange and errors in gatsby site config validation "path should not be null"
+* use correct lambda source code hash to minimize tainted resources (sha1, sha256 ? )
