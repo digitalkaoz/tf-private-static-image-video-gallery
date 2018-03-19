@@ -55,3 +55,10 @@ data "aws_iam_policy_document" "kms_key" {
     }
   }
 }
+
+module "encrypted_cf_key" {
+  source  = "matti/resource/shell"
+  version = "0.0.1"
+
+  command = "aws kms encrypt --region=${var.region} --key-id ${aws_kms_key.kms_key.id} --plaintext \"$(cat ${var.cloudfront_private_key_file})\" --query CiphertextBlob --output text"
+}

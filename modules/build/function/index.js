@@ -87,14 +87,16 @@ const uploadToSiteBucket = (errorCallback, callback) => {
     });
 };
 
-let createStaticSite = function (callback, errorCallback) {
+const createStaticSite = (callback, errorCallback) => {
     process.env.NODE_ENV = 'production';
     const gatsby = require('gatsby/dist/commands/build');
 
+    //console.log(fs.readFileSync('./gatsby-config.js', 'utf-8').toString());
     gatsby({
         directory: __dirname,
     }).then(callback).catch(errorCallback);
 };
+
 const createPosts = (objects, callback, errorCallback) => {
     // Parse albums
     const albums = getAlbums(objects);

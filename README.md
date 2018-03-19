@@ -41,21 +41,12 @@ a certificate for your `domain` or `certdomain` should already exists (in `us-ea
 3.
 the encrypted cloudfront private key
 
-> TODO automate, for now the key is created in the stack, so you have to run the stack twice with the generated hash
+create and download a cloudfront private key [here](https://console.aws.amazon.com/iam/home?region=us-east-1#/security_credential), note the ID
 
-Create CloudFront Key Pair, take note of the key pair ID and download the private key: https://console.aws.amazon.com/iam/home?region=us-east-1#/security_credential.
-
-Encrypt the CloudFront private key:
-
-```
-aws kms encrypt --key-id $KMS_KEY_ID --plaintext "$(cat pk-*.pem)" \
-                --query CiphertextBlob --output text
-```
-
-put this encrypted key into the variable `encrypted_cloudfront_private_key`
+put the absolute path to file into the variable `cloudfront_private_key_file`
 put the key_pair ID into `cloudfront_key_pair`
 
-> thats needed to generate signed cloudfront cookies
+> thats needed to generate signed cloudfront cookies and the ability to login
 
 4.
 a user in your [AWS Cognito User Pool](https://eu-central-1.console.aws.amazon.com/cognito/home?region=eu-central-1#) after the stack is initially completed
@@ -71,7 +62,7 @@ domain = "gallery-demo.digitalkaoz.net"
 region = "eu-central-1"
 certdomain = "digitalkaoz.net" #only if your domain is a subdomain
 cloudfront_key_pair = "XYZ"
-encrypted_cloudfront_private_key = "XYZ"
+cloudfront_private_key_file = "/path/to/cloudfront_private_key.pem"
 website_config = {
     title = "website title"
     subline = "sub headline"
@@ -103,7 +94,7 @@ module "ssl_private_image_gallery" {
   domain                           = "${var.domain}"
   certdomain                       = "${var.certdomain}"
   cloudfront_key_pair              = "${var.cloudfront_key_pair}"
-  encrypted_cloudfront_private_key = "${var.encrypted_cloudfront_private_key}"
+  cloudfront_private_key_file      = "${var.cloudfront_private_key_file}"
   website_config                   = "${var.website_config}"
 }
 ```
@@ -128,8 +119,8 @@ simply create them inside `AWS Cognito`
 * handle building of lambda functions outside of terraform?! would fix the needless terraform state changes but would need another tooling step :/
 * extract image metadata for later usage (e.g. geolocated on a worldmap)
 * certificate generation with DNS validation
-* cloudfront key_pair handling complete inside terraform
 * remove/publish gatsby lambda patches/hacks
 * Fix Terraform Building of function code ordering = build -> package -> upload -> create_function (sometimes its wrong)
 * sometimes the build lambda ist uploaded somehow strange and errors in gatsby site config validation "path should not be null"
 * use correct lambda source code hash to minimize tainted resources (sha1, sha256 ? )
+* remove css build chain for gatsby in lambda to remove custom `html.js` and hardcoded `static/main.css`

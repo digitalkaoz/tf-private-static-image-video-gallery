@@ -15,7 +15,7 @@ module "login" {
   domain                           = "${var.domain}"
   kms_key_arn                      = "${aws_kms_alias.kms_key.arn}"
   cloudfront_key_pair              = "${var.cloudfront_key_pair}"
-  encrypted_cloudfront_private_key = "${var.encrypted_cloudfront_private_key}"
+  encrypted_cloudfront_private_key = "${chomp(module.encrypted_cf_key.stdout)}"
   region                           = "${var.region}"
   build_bucket_id                  = "${aws_s3_bucket.build.id}"
 }
