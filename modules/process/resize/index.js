@@ -3,6 +3,7 @@ const async = require("async");
 const AWS = require("aws-sdk");
 const im = require("gm").subClass({imageMagick: true});
 const s3 = new AWS.S3({signatureVersion: 'v4'});
+const Imagemin = require('imagemin');
 
 const VARIANTS = ["1200x750", "560x425"];
 
@@ -139,7 +140,17 @@ const resize = (variant, image, callback) => {
             return callback(err);
         }
 
-        writeFile(`pics/resized/${variant}/${image.originalKey}`, buffer, image, callback);
+        //the 5.x branch of imagemin doesnt work in lambda due to permissions
+        new Imagemin()
+            .src(buffer)
+            .use(Imagemin.jpegtran({progressive: true}))
+            .use(Imagemin.optipng({optimizationLevel: 3}))
+            .run((err, files) => {
+                if (err) {
+                    return callback(err);
+                }
+                writeFile(`pics/resized/${variant}/${image.originalKey}`, files[0].contents, image, callback);
+            });
     });
 };
 

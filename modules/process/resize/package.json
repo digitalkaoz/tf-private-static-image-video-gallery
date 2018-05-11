@@ -7,7 +7,11 @@
   "main": "index.js",
   "dependencies": {
     "async": "^2.6.0",
-    "gm": "^1.23.0"
+    "gm": "^1.23.0",
+    "imagemin": "^4.0.0",
+    "imagemin-jpegtran": "^4.0.0",
+    "imagemin-optipng": "^4.0.0",
+    "imagemin-pngquant": "^5.1.0"
   },
   "devDependencies": {
     "@types/async": "^2.0.45",

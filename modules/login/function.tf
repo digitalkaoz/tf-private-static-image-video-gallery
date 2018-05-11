@@ -2,7 +2,7 @@ resource "null_resource" "login_build" {
   triggers {
     main    = "${sha256(file("${path.module}/function/index.js"))}"
     package = "${sha256(file("${path.module}/function/package.json"))}"
-    path    = "${path.module}/function"
+    dirname = "function"
   }
 
   provisioner "local-exec" {
@@ -13,17 +13,18 @@ resource "null_resource" "login_build" {
           $VOLUME \
           --workdir="${path.module}/function" \
           --entrypoint bash \
-          lambci/lambda:build-nodejs6.10 \
+          -e NODE_ENV=production \
+          lambci/lambda:build-nodejs8.10 \
           -c "\
-            rm -rf node_modules \
-            && npm install --production \
-          "
+            npm install --production \
+            && npm prune --production
+       "
         EOF
   }
 }
 
 data "archive_file" "login_code" {
-  source_dir  = "${null_resource.login_build.triggers.path}"
+  source_dir  = "${path.module}/${null_resource.login_build.triggers.dirname}"
   output_path = "${path.module}/lambda-login.zip"
   type        = "zip"
 }
@@ -39,7 +40,7 @@ resource "aws_lambda_function" "login" {
   function_name    = "login_${replace(var.domain, ".", "_")}"
   handler          = "index.handler"
   role             = "${aws_iam_role.login.arn}"
-  runtime          = "nodejs6.10"
+  runtime          = "nodejs8.10"
   s3_bucket        = "${var.build_bucket_id}"
   s3_key           = "${aws_s3_bucket_object.login_code.key}"
   source_code_hash = "${data.archive_file.login_code.output_base64sha256}"

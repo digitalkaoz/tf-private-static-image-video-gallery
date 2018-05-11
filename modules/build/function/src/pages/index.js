@@ -4,6 +4,13 @@ import Helmet from 'react-helmet'
 import Banner from '../components/Banner'
 
 class HomeIndex extends React.Component {
+
+    randomImage(node) {
+        const images = node.images.filter(image => !image.src.endsWith('.mp4'));
+
+        return images[Math.floor(Math.random() * images.length)].src
+    }
+
     render() {
         const siteTitle = this.props.data.site.siteMetadata.title;
         const siteDescription = this.props.data.site.siteMetadata.description;
@@ -21,12 +28,13 @@ class HomeIndex extends React.Component {
                 <div id="main">
                     <section id="one" className="tiles">
                         {folders.map(folder =>
-                            <article key={folder.node.frontmatter.title} style={{backgroundImage: `url("${folder.node.frontmatter.images[Math.floor(Math.random()*folder.node.frontmatter.images.length)].src}")`}}>
+                            <article key={folder.node.frontmatter.title} style={{backgroundImage: `url("${this.randomImage(folder.node.frontmatter)}")`}}>
                                 <header className="major">
-                                    <h3>{folder.node.frontmatter.title}</h3>
-                                    <p>{folder.node.excerpt}</p>
+                                    <Link to={folder.node.frontmatter.path} className="link primary" >
+                                        <h3>{folder.node.frontmatter.title}</h3>
+                                        <p>{folder.node.excerpt}</p>
+                                    </Link>
                                 </header>
-                                <Link to={folder.node.frontmatter.path} className="link primary"></Link>
                             </article>
                         )}
                     </section>

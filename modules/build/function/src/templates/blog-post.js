@@ -5,16 +5,23 @@ import BannerLanding from '../components/BannerLanding';
 import Gallery from '../components/Gallery';
 
 class BlogPostTemplate extends React.Component {
+    randomImage(node) {
+        const images = node.images.filter(image => !image.src.endsWith('.mp4'));
+
+        return images[Math.floor(Math.random() * images.length)];
+    }
+
     render() {
         const post = this.props.data.markdownRemark;
         const siteTitle = get(this.props, 'data.site.siteMetadata.title');
-        const main = post.frontmatter.images[Math.floor(Math.random() * post.frontmatter.images.length)];
         const images = post.frontmatter.images;
 
         return <div>
             <Helmet title={`${post.frontmatter.title} | ${siteTitle}`}>
             </Helmet>
-            <BannerLanding name={post.frontmatter.title} image={main} content={post.html}
+            <BannerLanding name={post.frontmatter.title}
+                           image={this.randomImage(post.frontmatter)}
+                           content={post.html}
                            date={post.frontmatter.date}/>
             <div id="main">
                 <section id="one">

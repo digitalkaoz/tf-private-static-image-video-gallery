@@ -48,7 +48,7 @@ resource "aws_cloudfront_distribution" "web" {
     }
   }
 
-  cache_behavior {
+  ordered_cache_behavior {
     target_origin_id       = "processed.${var.domain}"
     path_pattern           = "original/*/*.mp4"
     allowed_methods        = ["HEAD", "GET", "OPTIONS"]
@@ -60,7 +60,7 @@ resource "aws_cloudfront_distribution" "web" {
     viewer_protocol_policy = "redirect-to-https"
     trusted_signers        = ["self"]
 
-    "forwarded_values" {
+    forwarded_values {
       cookies {
         forward = "all"
       }
@@ -69,7 +69,7 @@ resource "aws_cloudfront_distribution" "web" {
     }
   }
 
-  cache_behavior {
+  ordered_cache_behavior {
     target_origin_id       = "processed.${var.domain}"
     path_pattern           = "original/*/*.png"
     allowed_methods        = ["HEAD", "GET", "OPTIONS"]
@@ -81,7 +81,7 @@ resource "aws_cloudfront_distribution" "web" {
     viewer_protocol_policy = "redirect-to-https"
     trusted_signers        = ["self"]
 
-    "forwarded_values" {
+    forwarded_values {
       cookies {
         forward = "all"
       }
@@ -90,7 +90,7 @@ resource "aws_cloudfront_distribution" "web" {
     }
   }
 
-  cache_behavior {
+  ordered_cache_behavior {
     target_origin_id       = "processed.${var.domain}"
     path_pattern           = "pics/resized/*"
     allowed_methods        = ["HEAD", "GET", "OPTIONS"]
@@ -102,7 +102,7 @@ resource "aws_cloudfront_distribution" "web" {
     viewer_protocol_policy = "redirect-to-https"
     trusted_signers        = ["self"]
 
-    "forwarded_values" {
+    forwarded_values {
       cookies {
         forward = "all"
       }
@@ -111,7 +111,7 @@ resource "aws_cloudfront_distribution" "web" {
     }
   }
 
-  cache_behavior {
+  ordered_cache_behavior {
     target_origin_id       = "login.${var.domain}"
     path_pattern           = "Prod/*"
     allowed_methods        = ["HEAD", "DELETE", "POST", "GET", "OPTIONS", "PUT", "PATCH"]
@@ -121,12 +121,75 @@ resource "aws_cloudfront_distribution" "web" {
     min_ttl                = 86400
     viewer_protocol_policy = "https-only"
 
-    "forwarded_values" {
+    forwarded_values {
       "cookies" {
         forward = "all"
       }
 
       headers      = ["Accept", "Authorization", "Content-Type", "Referer"]
+      query_string = false
+    }
+  }
+
+  ordered_cache_behavior {
+    target_origin_id       = "${var.domain}"
+    path_pattern           = "index.html"
+    viewer_protocol_policy = "redirect-to-https"
+    allowed_methods        = ["GET", "HEAD"]
+    cached_methods         = ["GET", "HEAD"]
+    trusted_signers        = ["self"]
+    default_ttl            = 86400
+    max_ttl                = 86400
+    min_ttl                = 86400
+    compress               = true
+
+    forwarded_values {
+      cookies {
+        forward = "all"
+      }
+
+      query_string = false
+    }
+  }
+
+  ordered_cache_behavior {
+    target_origin_id       = "${var.domain}"
+    path_pattern           = "*/index.html"
+    viewer_protocol_policy = "redirect-to-https"
+    allowed_methods        = ["GET", "HEAD"]
+    cached_methods         = ["GET", "HEAD"]
+    trusted_signers        = ["self"]
+    default_ttl            = 86400
+    max_ttl                = 86400
+    min_ttl                = 86400
+    compress               = true
+
+    forwarded_values {
+      cookies {
+        forward = "all"
+      }
+
+      query_string = false
+    }
+  }
+
+  ordered_cache_behavior {
+    target_origin_id       = "${var.domain}"
+    path_pattern           = "path---*"
+    viewer_protocol_policy = "redirect-to-https"
+    allowed_methods        = ["GET", "HEAD"]
+    cached_methods         = ["GET", "HEAD"]
+    trusted_signers        = ["self"]
+    default_ttl            = 86400
+    max_ttl                = 86400
+    min_ttl                = 86400
+    compress               = true
+
+    forwarded_values {
+      cookies {
+        forward = "all"
+      }
+
       query_string = false
     }
   }
@@ -137,12 +200,11 @@ resource "aws_cloudfront_distribution" "web" {
     allowed_methods        = ["GET", "HEAD"]
     cached_methods         = ["GET", "HEAD"]
     default_ttl            = 86400
-    trusted_signers        = ["self"]
     max_ttl                = 86400
     min_ttl                = 86400
     compress               = true
 
-    "forwarded_values" {
+    forwarded_values {
       cookies {
         forward = "all"
       }

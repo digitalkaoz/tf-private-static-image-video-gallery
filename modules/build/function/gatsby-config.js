@@ -1,13 +1,15 @@
-require('dotenv').config()
+if (process.env.NODE_ENV !== "production") {
+    require('dotenv').config();
+}
 
 const config = JSON.parse(process.env.CONFIG || "{}");
 
 module.exports = {
     siteMetadata: {
-        title: config.title,
-        author: config.author,
-        description: config.subline,
-        shortcode: config.shortcode
+        title: config.title || "Image-Video Gallery",
+        author: config.author || "Robert Schönthal",
+        description: config.subline || "private and serverless",
+        shortcode: config.shortcode || "IVG"
     },
     pathPrefix: '/',
     plugins: [
@@ -32,19 +34,10 @@ module.exports = {
                 display: 'minimal-ui',
                 icons: [
                     {
-                        // Everything in /static will be copied to an equivalent
-                        // directory in /public during development and build, so
-                        // assuming your favicons are in /static/favicons,
-                        // you can reference them here
-                        src: '/favicons/android-chrome-192x192.png',
-                        sizes: '192x192',
+                        src: '/favicon.png',
+                        sizes: '144x144',
                         type: 'image/png',
-                    },
-                    {
-                        src: '/favicons/android-chrome-512x512.png',
-                        sizes: '512x512',
-                        type: 'image/png',
-                    },
+                    }
                 ],
             },
         },
@@ -53,7 +46,6 @@ module.exports = {
             options: {
                 staticFileGlobs: [
                     `${__dirname}/public/**/*.{js,css,woff2}`,
-                    `${__dirname}/public/manifest.json`,
                     `${__dirname}/public/offline-plugin-app-shell-fallback/index.html`,
                 ],
                 stripPrefix: __dirname + '/public',
@@ -78,5 +70,5 @@ module.exports = {
                 skipWaiting: true,
             }
         }
-    ],
+    ].filter(plugin => plugin),
 };

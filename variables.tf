@@ -24,7 +24,5 @@ variable "cloudfront_private_key_file" {
 
 variable "website_config" {
   description = "the website configuration"
-  type = "map"
+  type        = "map"
 }
-
-

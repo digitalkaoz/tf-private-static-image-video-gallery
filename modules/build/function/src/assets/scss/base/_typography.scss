@@ -23,7 +23,8 @@
 		}
 
 		@include breakpoint(xxsmall) {
-			font-size: 11pt;
+			font-size: 14pt;
+			font-weight: _font(500);
 		}
 	}
 

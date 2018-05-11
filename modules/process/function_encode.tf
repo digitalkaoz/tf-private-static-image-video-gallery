@@ -2,7 +2,7 @@ resource "null_resource" "encode_build" {
   triggers {
     main    = "${sha256(file("${path.module}/encode/index.js"))}"
     package = "${sha256(file("${path.module}/encode/package.json"))}"
-    path    = "${path.module}/encode"
+    dirname = "encode"
   }
 
   provisioner "local-exec" {
@@ -13,34 +13,33 @@ resource "null_resource" "encode_build" {
           $VOLUME \
           --workdir="${path.module}/encode" \
           --entrypoint bash \
-          lambci/lambda:build-nodejs6.10 \
+          lambci/lambda:build-nodejs8.10 \
           -c "\
-            rm -rf node_modules \
-            && npm install --production \
-            && npm rebuild --force
+            npm install --production \
+            && npm prune --production
           "
         EOF
   }
 }
 
 data "archive_file" "encode_code" {
-  source_dir  = "${null_resource.encode_build.triggers.path}"
+  source_dir  = "${path.module}/${null_resource.encode_build.triggers.dirname}"
   output_path = "${path.module}/lambda-encode.zip"
   type        = "zip"
 }
 
 resource "aws_s3_bucket_object" "encode_code" {
-  bucket     = "${var.build_bucket_id}"
-  key        = "lambda-encode.zip"
-  source     = "${path.module}/lambda-encode.zip"
-  etag       = "${data.archive_file.encode_code.output_md5}"
+  bucket = "${var.build_bucket_id}"
+  key    = "lambda-encode.zip"
+  source = "${path.module}/lambda-encode.zip"
+  etag   = "${data.archive_file.encode_code.output_md5}"
 }
 
 resource "aws_lambda_function" "encode" {
   function_name    = "encode_${replace(var.domain, ".", "_")}"
   handler          = "index.handler"
   role             = "${aws_iam_role.process.arn}"
-  runtime          = "nodejs6.10"
+  runtime          = "nodejs8.10"
   s3_bucket        = "${var.build_bucket_id}"
   s3_key           = "${aws_s3_bucket_object.encode_code.key}"
   source_code_hash = "${data.archive_file.encode_code.output_base64sha256}"

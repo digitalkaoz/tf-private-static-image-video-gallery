@@ -4,7 +4,8 @@ resource "null_resource" "build_build" {
     package = "${sha256(file("${path.module}/function/package.json"))}"
     config  = "${sha256(file("${path.module}/function/gatsby-config.js"))}"
     layout  = "${sha256(file("${path.module}/function/src/layouts/index.js"))}"
-    path    = "${path.module}/function"
+    html    = "${sha256(file("${path.module}/function/src/html.js"))}"
+    dirname = "function"
   }
 
   provisioner "local-exec" {
@@ -15,10 +16,14 @@ resource "null_resource" "build_build" {
           $VOLUME \
           --workdir="${path.module}/function" \
           --entrypoint bash \
-          lambci/lambda:build-nodejs6.10 \
+          lambci/lambda:build-nodejs8.10 \
           -c "\
-            npm install --production \
-            && cp patch/pages-writer.js node_modules/gatsby/dist/internal-plugins/query-runner/pages-writer.js
+            rm -rf node_modules \
+            && npm i -g npm@latest \
+            && NODE_ENV=production npm ci --production \
+            && cp patch/pages-writer.js node_modules/gatsby/dist/internal-plugins/query-runner/pages-writer.js \
+            && rm -rf public \
+            && rm -rf .cache
           "
         EOF
   }
@@ -26,24 +31,24 @@ resource "null_resource" "build_build" {
 
 data "archive_file" "build_code" {
   depends_on  = ["null_resource.build_build"]
-  source_dir  = "${null_resource.build_build.triggers.path}"
+  source_dir  = "${path.module}/${null_resource.build_build.triggers.dirname}"
   output_path = "${path.module}/lambda-build.zip"
   type        = "zip"
 }
 
 resource "aws_s3_bucket_object" "build_code" {
-  depends_on  = ["null_resource.build_build"]
-  bucket = "${var.build_bucket_id}"
-  key    = "lambda-build.zip"
-  source = "${data.archive_file.build_code.output_path}"
-  etag   = "${data.archive_file.build_code.output_md5}"
+  depends_on = ["null_resource.build_build"]
+  bucket     = "${var.build_bucket_id}"
+  key        = "lambda-build.zip"
+  source     = "${data.archive_file.build_code.output_path}"
+  etag       = "${data.archive_file.build_code.output_md5}"
 }
 
 resource "aws_lambda_function" "build" {
   function_name    = "build_${replace(var.domain, ".", "_")}"
   handler          = "index.handler"
   role             = "${aws_iam_role.build.arn}"
-  runtime          = "nodejs6.10"
+  runtime          = "nodejs8.10"
   s3_bucket        = "${var.build_bucket_id}"
   s3_key           = "${aws_s3_bucket_object.build_code.key}"
   source_code_hash = "${data.archive_file.build_code.output_base64sha256}"

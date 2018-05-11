@@ -2,7 +2,7 @@ resource "null_resource" "resize_build" {
   triggers {
     main    = "${sha256(file("${path.module}/resize/index.js"))}"
     package = "${sha256(file("${path.module}/resize/package.json"))}"
-    path    = "${path.module}/resize"
+    dirname = "resize"
   }
 
   provisioner "local-exec" {
@@ -13,10 +13,10 @@ resource "null_resource" "resize_build" {
           $VOLUME \
           --workdir="${path.module}/resize" \
           --entrypoint bash \
-          lambci/lambda:build-nodejs6.10 \
+          lambci/lambda:build-nodejs8.10 \
           -c "\
-            rm -rf node_modules \
-            && npm install --production \
+            npm install --production\
+            && npm prune --production \
             && npm rebuild --force
           "
         EOF
@@ -24,7 +24,7 @@ resource "null_resource" "resize_build" {
 }
 
 data "archive_file" "resize_code" {
-  source_dir  = "${null_resource.resize_build.triggers.path}"
+  source_dir  = "${path.module}/${null_resource.resize_build.triggers.dirname}"
   output_path = "${path.module}/lambda-resize.zip"
   type        = "zip"
 }
@@ -40,7 +40,7 @@ resource "aws_lambda_function" "resize" {
   function_name    = "resize_${replace(var.domain, ".", "_")}"
   handler          = "index.handler"
   role             = "${aws_iam_role.process.arn}"
-  runtime          = "nodejs6.10"
+  runtime          = "nodejs8.10"
   s3_bucket        = "${var.build_bucket_id}"
   s3_key           = "${aws_s3_bucket_object.resize_code.key}"
   source_code_hash = "${data.archive_file.resize_code.output_base64sha256}"

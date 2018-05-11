@@ -1,42 +1,46 @@
-const _ = require('lodash')
-const path = require('path')
+const nodePath = require(`path`);
 
-exports.createPages = ({graphql, boundActionCreators}) => {
-    const {createPage} = boundActionCreators
+exports.createPages = ({ graphql, boundActionCreators }) => {
+    const { createPage } = boundActionCreators
 
     return new Promise((resolve, reject) => {
-        const blogPost = path.resolve('./src/templates/blog-post.js')
-        resolve(
-            graphql(
-                `
-      {
-        allMarkdownRemark(limit: 1000) {
-          edges {
-            node {
-              frontmatter {
-                path
-              }
-            }
-          }
-        }
-      }
-    `
-            ).then(result => {
-                if (result.errors) {
-                    reject(result.errors)
-                }
+        const blogPostTemplate = nodePath.resolve(`src/templates/blog-post.js`)
 
-                // Create blog posts pages.
-                _.each(result.data.allMarkdownRemark.edges, edge => {
-                    createPage({
-                        path: edge.node.frontmatter.path,
-                        component: blogPost,
+        graphql(
+            `{
+                allMarkdownRemark(limit: 1000) {
+                    edges {
+                        node {
+                            frontmatter {
+                                path
+                                title
+                            }
+                        }
+                    }
+                }
+            }
+        `
+        ).then(result => {
+            if (result.errors) {
+                console.log(result.errors);
+                reject();
+            }
+
+            // Create blog posts pages.
+            result.data.allMarkdownRemark.edges.forEach(edge => {
+                const {path, title} = edge.node.frontmatter;
+                createPage({
+                        path,
+                        component: blogPostTemplate,
                         context: {
-                            path: edge.node.frontmatter.path,
+                            title,
+                            slug: path,
                         },
                     })
-                })
-            })
-        )
+                }
+            );
+
+            resolve();
+        })
     })
 };

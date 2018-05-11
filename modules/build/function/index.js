@@ -18,22 +18,30 @@ const linkedFs = link(fs, [
 ]);
 linkedFs.ReadStream = fs.ReadStream;
 linkedFs.WriteStream = fs.WriteStream;
+
 mock('fs', linkedFs);
 
 const readdirp = require('readdirp');
 const fsExtra = require('fs-extra');
-
-fsExtra.ensureDirSync(require('os').tmpdir() + '/posts');
-fsExtra.ensureDirSync(require('os').tmpdir() + '/.cache');
-fsExtra.emptyDirSync(require('os').tmpdir() + '/posts');
-fsExtra.emptyDirSync(require('os').tmpdir() + '/.cache');
 
 const log = console.log;
 console.log = (args) => {
     log(stripAnsi(args))
 };
 
+const cleanDirs = () => {
+    fsExtra.ensureDirSync(require('os').tmpdir() + '/posts');
+    fsExtra.ensureDirSync(require('os').tmpdir() + '/.cache');
+    fsExtra.ensureDirSync(require('os').tmpdir() + '/public');
+
+    fsExtra.emptyDirSync(require('os').tmpdir() + '/public');
+    fsExtra.emptyDirSync(require('os').tmpdir() + '/posts');
+    fsExtra.emptyDirSync(require('os').tmpdir() + '/.cache');
+};
+
 exports.handler = function (event, context) {
+    cleanDirs();
+
     console.log('event ', JSON.stringify(event));
 
     getContents(null, (err, objects) => {
@@ -91,7 +99,6 @@ const createStaticSite = (callback, errorCallback) => {
     process.env.NODE_ENV = 'production';
     const gatsby = require('gatsby/dist/commands/build');
 
-    //console.log(fs.readFileSync('./gatsby-config.js', 'utf-8').toString());
     gatsby({
         directory: __dirname,
     }).then(callback).catch(errorCallback);

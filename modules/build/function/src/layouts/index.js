@@ -43,6 +43,7 @@ class Template extends React.Component {
 
     render() {
         const { children } = this.props;
+        const { shortcode, author } = this.props.data.site.siteMetadata;
 
         return (
             <div className={`body ${this.state.loading} ${this.state.isMenuVisible ? 'is-menu-visible' : ''}`}>
@@ -50,9 +51,9 @@ class Template extends React.Component {
                     <meta name="theme-color" content={initialStyle.background}/>
                 </Helmet>
                 <div id="wrapper">
-                    <Header shortName={this.props.data.site.siteMetadata.shortcode} onToggleMenu={this.handleToggleMenu} />
+                    <Header shortName={shortcode} onToggleMenu={this.handleToggleMenu} />
                     {children()}
-                    <Footer author={this.props.data.site.siteMetadata.author} />
+                    <Footer author={author} />
                 </div>
                 <Menu onToggleMenu={this.handleToggleMenu} folders={this.props.data.allMarkdownRemark.edges} />
             </div>

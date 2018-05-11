@@ -1,2 +1,4 @@
 src/pages/elements.js
 static/images/pic*.jpg
+public
+.cache
