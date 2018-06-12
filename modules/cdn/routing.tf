@@ -32,14 +32,15 @@ resource "aws_route53_record" "mx" {
 
 # in case its a subdomain, simply add a record set
 data "aws_route53_zone" "web" {
-  name = "${var.certdomain}."
+  count = "${var.certdomain != "" ? 1 : 0}"
+  name  = "${var.certdomain}."
 }
 
 resource "aws_route53_record" "subdomain" {
   count   = "${var.certdomain != "" ? 1 : 0}"
   name    = "${var.domain}"
   type    = "CNAME"
-  zone_id = "${data.aws_route53_zone.web.zone_id}"
+  zone_id = "${data.aws_route53_zone.web.0.zone_id}"
   ttl     = 3600
 
   records = [

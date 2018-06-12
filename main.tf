@@ -8,6 +8,7 @@ module "cdn" {
   login_origin     = "${module.login.lambda_invoke_url}"
   source_origin    = "${module.source.bucket_domain}"
   processed_origin = "${module.process.bucket_domain}"
+  mx_hosts         = "${var.mx_hosts}"
 }
 
 module "login" {
