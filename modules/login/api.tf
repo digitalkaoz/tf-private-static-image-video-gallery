@@ -1,4 +1,5 @@
 resource "aws_api_gateway_rest_api" "login" {
+  depends_on  = ["aws_lambda_function.login"]
   name        = "${var.domain}"
   description = "Apis for ${var.domain}"
 }
