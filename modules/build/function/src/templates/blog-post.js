@@ -5,8 +5,8 @@ import BannerLanding from '../components/BannerLanding';
 import Gallery from '../components/Gallery';
 
 class BlogPostTemplate extends React.Component {
-    randomImage(node) {
-        const images = node.images.filter(image => !image.src.endsWith('.mp4'));
+    randomImage(medias) {
+        const images = medias.filter(image => !image.src.endsWith('.mp4'));
 
         return images[Math.floor(Math.random() * images.length)];
     }
@@ -14,19 +14,20 @@ class BlogPostTemplate extends React.Component {
     render() {
         const post = this.props.data.markdownRemark;
         const siteTitle = get(this.props, 'data.site.siteMetadata.title');
-        const images = post.frontmatter.images;
+        const medias = post.frontmatter.images;
+        const bannerImage = this.randomImage(medias);
+        const contentMedia = medias.filter((image) => image.src !== bannerImage.src);
 
         return <div>
-            <Helmet title={`${post.frontmatter.title} | ${siteTitle}`}>
-            </Helmet>
+            <Helmet title={`${post.frontmatter.title} | ${siteTitle}`} />
             <BannerLanding name={post.frontmatter.title}
-                           image={this.randomImage(post.frontmatter)}
+                           image={bannerImage}
                            content={post.html}
                            date={post.frontmatter.date}/>
             <div id="main">
                 <section id="one">
                     <div className="box alt">
-                        <Gallery images={images} showThumbnails={true} />
+                        <Gallery images={contentMedia} showThumbnails={true} />
                     </div>
                 </section>
             </div>
